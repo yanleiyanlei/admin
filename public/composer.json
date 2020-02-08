@@ -1,0 +1,7 @@
+{
+    "require": {
+        "jaeger/querylist": "~V4",
+        "jaeger/querylist-phantomjs": "^4.0",
+        "phpoffice/phpspreadsheet": "^1.8"
+    }
+}
