@@ -32,11 +32,12 @@ class Toutiao extends Command
         $url = Cache::get($keyword);
 //print_r($url);exit;
         foreach ($url as $key=>$vurl) {
-           if($key>10)break;
+          if($key>30)break;
             $rt = QueryList::get($vurl['url'])->find()->html();
             $preg = "#title: '(.*)'.slice#isU";//正则的规则是寻找一个title标签的内容
             preg_match_all($preg, $rt, $result);//php正则表达式
             $title = trim(htmlspecialchars_decode($result[1][0]), " \" ");
+            echo $title."\n\r";
             if(!$title)continue;
             $news[$key]['title'] = $title;
 

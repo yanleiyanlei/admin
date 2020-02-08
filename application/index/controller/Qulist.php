@@ -115,6 +115,10 @@ print_r($touarray);
 //print_r($url);exit;
 foreach ($url as $key=>$vurl) {
     $rt = QueryList::get($vurl['url'])->find()->html();
+//    $rt = file_get_contents($vurl['url']);
+//    $rt = $this->curl_tou($vurl['url']);
+//    $rt = 'aaa';
+//    print_r($rt);exit;
     $preg = "#title: '(.*)'.slice#isU";//正则的规则是寻找一个title标签的内容
     preg_match_all($preg, $rt, $result);//php正则表达式
     $news[$key]['title'] = trim(htmlspecialchars_decode($result[1][0]), " \" ");
@@ -135,9 +139,9 @@ foreach ($url as $key=>$vurl) {
 //    print_r($baiduseach);
 }
 
-$this->wexcel($news);
+//$this->wexcel($news);
 //echo 'enda';
-//print_r($news);
+print_r($news);
 
     }
 
@@ -538,7 +542,7 @@ print_r($reach_word);
 public function testbaidua()
 {
     echo 'test闫磊';
-    $str = "Shopify SEO终极指南（巨详细的操作教程，赶快收藏！）";
+    $str = "SEO已死，真的吗，十年SEO从业者的思考";
     $key_word = urlencode($str);
     $url = "https://www.baidu.com/s?ie=utf-8&wd=".$key_word;
 
@@ -587,5 +591,46 @@ public function testbaidua()
 //        return  $str;
     print_r($reach_word);
 //    echo $content;
+}
+
+
+public function curl_tou($url){
+
+    $header = array (
+        'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36',
+        'Accept: */*',
+        'Cache-Control:no-cache',
+        'Postman-Token:a2326fdc-34fa-4daa-b801-5f74f8721184',
+        'Host: www.toutiao.com',
+//        'Accept-Encoding: gzip, deflate, br',
+        'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8',
+        'Connection: keep-alive',
+        /*
+        'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8',
+        'is_referer: https://www.baidu.com/',
+        'is_xhr: 1',
+        'Referer: https://www.baidu.com/',
+        'User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.2)',
+        'X-Requested-With: XMLHttpRequest',*/
+    );
+
+
+
+    $ch = curl_init ();
+
+    curl_setopt ( $ch, CURLOPT_URL, $url );
+
+    curl_setopt ( $ch, CURLOPT_HTTPHEADER, $header );
+
+    curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
+
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+
+    $res = curl_exec ( $ch );
+    curl_close ( $ch );
+
+    return $res;
+
 }
 }
