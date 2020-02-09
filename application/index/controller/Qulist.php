@@ -44,6 +44,7 @@ class Qulist extends Controller
     public function toutiao()
     {
         $keyword = input('key');
+        $seachword = urlencode(input('word'));
         if ($touarray = Cache::get($keyword)) {
             echo '读取缓存';
 print_r($touarray);
@@ -72,7 +73,7 @@ print_r($touarray);
             $k = 10000;//先循环10000/20 = 500次吧
             for ($i = 0; $i <= $k; $i = $i + 20) {
 
-                $url = "https://www.toutiao.com/api/search/content/?aid=24&app_name=web_search&offset=$i&format=json&keyword=seo";
+                 $url = "https://www.toutiao.com/api/search/content/?aid=24&app_name=web_search&offset=$i&format=json&keyword=".$seachword;
                 $data = curl_get($url, $cookie, $headers);
                 $datall = json_decode($data, true);
 

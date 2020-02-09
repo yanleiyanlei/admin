@@ -32,13 +32,20 @@ class Toutiao extends Command
         $url = Cache::get($keyword);
 //print_r($url);exit;
         foreach ($url as $key=>$vurl) {
-          if($key>30)break;
+//          if($key>30)break;
+//            if($key<50 || $key >70)continue;
+            $start_time = microtime(true);//  开始执行时间
             $rt = QueryList::get($vurl['url'])->find()->html();
             $preg = "#title: '(.*)'.slice#isU";//正则的规则是寻找一个title标签的内容
             preg_match_all($preg, $rt, $result);//php正则表达式
             $title = trim(htmlspecialchars_decode($result[1][0]), " \" ");
-            echo $title."\n\r";
-            if(!$title)continue;
+            echo 'key: '.$key.'   ---'.$title;
+            if(!$title) {
+                $end_time = microtime(true);
+                $execution_time = $end_time - $start_time;
+                echo "   ---当前end ".round($execution_time,1).'s'. "\n\r";
+                continue;
+            }
             $news[$key]['title'] = $title;
 
             $preg = "#content: '(.*)'.slice#isU";//正则的规则是寻找一个title标签的内容
@@ -50,11 +57,18 @@ class Toutiao extends Command
             $str = preg_replace("/<img.*?>/si", "", $str);
 //           拿title去搜索，抓取百度页面下面的相关搜索     百度有安全验证，针对UA 应该设置的时间
             $baiduseach = $this->testbaidua($news[$key]['title']);
-//            sleep(1);
+            if($key>0 && $key%20==0)
+            {
+                sleep(10);
+            }else {
+                sleep(1);
+            }
             $news[$key]['bai'] = $baiduseach ? $baiduseach:$news[$key]['title'];
             //内容
             $news[$key]['con'] = trim($str, "&quot;");
-
+            $end_time = microtime(true);
+            $execution_time = $end_time - $start_time;
+            echo "   ---end  ".round($execution_time,1).'s'."\n\r";
 //    print_r($baiduseach);
         }
 
@@ -125,7 +139,7 @@ class Toutiao extends Command
         $url = "https://www.baidu.com/s?ie=utf-8&wd=".$key_word;
 
         $header = array (
-            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36',
+            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.'.rand(10,99),
             'Accept: */*',
             'Cache-Control:no-cache',
 //        'Postman-Token:a2326fdc-34fa-4daa-b801-5f74f8721184',
